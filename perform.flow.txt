@@ -1,0 +1,158 @@
+// ~silent
+//出招顺序为从上往下以此判断出招，可以自己手动修改顺序。
+//所有出招均可按照自己的技能组合来修改，照葫芦画瓢可无限拓展。
+//主导出招的是除自创技能外，固定的技能。（这是我个人习惯用的。）
+//如果不想用主导出招进行放技能，可以删除，并模仿放buff的写法，按技能释放顺序仿写。（很重要，根据个人习惯来。）
+//单独的技能可以单独拿出来写。比如下面第一个释放的定乾坤，你可以换成闭口或者其他的，不同位置的技能同理，一切都看你的技能组合。
+//不要拘泥于同一种写法，可以随意更换。
+//一次改完后，可以解除每次在换武功后更改出招的烦恼。
+
+//出招：内功技能：定乾坤。
+//判断你要用的技能是否冷却完毕↓
+[(:cd force.ding) == false] @perform force.ding
+
+//自创的技能，也包容除自创技能以外的。
+//判断技能组里是否含有你需要的技能↓
+@js ($skill) = $('.pfm-item').text()
+@js ($sortResTianDi) = /天地决/.test('(skill)')
+@js ($sortResHunDun) = /混沌诀/.test('(skill)')
+@js ($sortResJianXin) = /剑心通明/.test('(skill)')
+@js ($sortResJiuYin) = /逆转九阴/.test('(skill)')
+@js ($sortResSheZhui) = /千蛇出洞/.test('(skill)')
+@js ($sortResLuoHua) = /落花/.test('(skill)')
+@js ($sortResDingYing) = /定影/.test('(skill)')
+
+//出招：内功buff（自创技能写法）：混沌诀，剑心，九阴等。
+//判断是否是你需要的技能，是否已经存在内功BUFF，并且判断你要用的技能是否已经冷却完毕↓
+[if] (sortResHunDun) && (:status force) == false && (:cd force.busi) == false
+  @perform force.busi
+[if] (sortResJianXin) && (:status force) == false && (:cd force.xin) == false
+  @perform force.xin
+[if] (sortResJiuYin) && (:status force) == false && (:cd force.cui) == false
+  @perform force.cui
+
+//出招：武器buff：嗜血，无招，剑意，剑雨等。
+//判断武器是否为刀↓
+[if](:weapon blade) ==true
+//判断刀法装备的技能是什么，判断是否已经存在武器BUFF，并且判断你要用的技能是否已经冷却完毕↓
+   [if] (:kf_dao) == xuedao && (:status weapon) == false && (:cd blade.shi) == false
+      @perform blade.shi
+
+[if](:weapon sword) ==true 
+   [if] (:kf_jian) == dugujiujian && (:status weapon) == false && (:cd sword.wu) == false
+      @perform sword.wu
+   [if] (:kf_jian) == dugujiujian4 && (:status weapon) == false && (:cd sword.yi) == false
+      @perform sword.yi
+   [if] (:kf_jian) == fuyujianfa && (:status weapon) == false && (:cd sword.yu) == false
+      @perform sword.yu
+
+//出招：招架buff：补天，移花，五神剑等。
+[if] (:kf_zhao) == tianmoce && (:status parry) == false && (:cd parry.bu) == false
+  @perform parry.bu
+[if] (:kf_zhao) == yihuajiemu && (:status parry) == false && (:cd parry.yi) == false
+  @perform parry.yi
+[if] (:kf_zhao) == hengshanwushenjian && (:status parry) == false && (:cd parry.wu) == false
+  @perform parry.wu
+
+//出招：轻功buff：鬼影，比翼，追风，无痕等。
+[if] (:kf_qing) == tianmoce && (:status dodge) == false && (:cd dodge.gui) == false
+  @perform dodge.gui
+[if] (:kf_qing) == lingxibu && (:status dodge) == false && (:cd dodge.fo) == false
+  @perform dodge.fo
+[if] (:kf_qing) == qianlizhuifeng && (:status dodge) == false && (:cd dodge.zhui) == false
+  @perform dodge.zhui
+[if] (:kf_qing) == taxuexunmei && (:status dodge) == false && (:cd dodge.power) == false
+  @perform dodge.power
+
+//出招：拳脚技能（主导出招）剑/刀法：拳罡/左右互搏/降龙掌/六脉神剑等>>>>>>剑来/剑罡/血刀等。
+//拳罡
+[if] (:kf_quan) == tianmoce
+   [if](:weapon sword) ==true
+      [if] (:kf_jian) == dugujiujian4
+         [if] (sortResTianDi)
+            @perform unarmed.quan,sword.lai,force.zhen,unarmed.quan,sword.lai
+         [else]
+            @perform unarmed.quan,sword.lai
+      [if] (:kf_jian) == fuyujianfa
+         [if] (sortResTianDi)
+            @perform unarmed.quan,sword.ji,force.zhen,unarmed.quan,sword.ji
+         [else]
+            @perform unarmed.quan,sword.ji
+
+   [if](:weapon blade) ==true
+      [if] (:kf_dao) == xuedao
+         [if] (sortResTianDi)
+            @perform unarmed.quan,blade.xue,force.zhen,unarmed.quan,blade.xue
+         [else]
+            @perform unarmed.quan,blade.xue
+
+//左右互搏
+[if] (:kf_quan) == kongmingquan
+   [if](:weapon sword) ==true
+      [if] (:kf_jian) == dugujiujian4
+         [if] (sortResTianDi)
+            @perform sword.lai,unarmed.zuo,force.zhen,sword.lai,unarmed.zuo
+         [else]
+            @perform sword.lai,unarmed.zuo
+      [if] (:kf_jian) == fuyujianfa
+         [if] (sortResTianDi)
+            @perform sword.ji,unarmed.zuo,force.zhen,sword.ji,unarmed.zuo
+         [else]
+            @perform sword.ji,unarmed.zuo
+   [if](:weapon blade) ==true
+      [if] (:kf_dao) == xuedao
+         [if] (sortResTianDi)
+            @perform blade.xue,unarmed.zuo,force.zhen,blade.xue,unarmed.zuo
+         [else]
+            @perform blade.xue,unarmed.zuo
+
+//降龙掌
+[if] (:kf_quan) == xianglongzhang4
+   [if](:weapon sword) ==true
+      [if] (:kf_jian) == dugujiujian4
+         [if] (sortResTianDi)
+            @perform sword.lai,unarmed.qi,unarmed.shiba,force.zhen,sword.lai,unarmed.qi,unarmed.shiba
+         [else]
+            @perform sword.lai,unarmed.qi,unarmed.shiba
+      [if] (:kf_jian) == fuyujianfa
+         [if] (sortResTianDi)
+            @perform sword.ji,unarmed.qi,unarmed.shiba,force.zhen,sword.ji,unarmed.qi,unarmed.shiba
+         [else]
+            @perform sword.ji,unarmed.qi,unarmed.shiba
+   [if](:weapon sword) ==true
+      [if] (:kf_dao) == xuedao
+         [if] (sortResTianDi)
+            @perform unarmed.qi,unarmed.shiba,blade.xue,force.zhen,unarmed.qi,unarmed.shiba,blade.xue
+         [else]
+            @perform unarmed.qi,unarmed.shiba,blade.xue
+	  
+//六脉神剑
+[if] (:kf_quan) == liumaishenjian
+   [if](:weapon sword) ==true
+      [if] (:kf_jian) == dugujiujian4
+         [if] (sortResTianDi)
+            @perform sword.lai,unarmed.qi,unarmed.liu,force.zhen,sword.lai,unarmed.qi,unarmed.liu
+         [else]
+            @perform sword.lai,unarmed.qi,unarmed.liu
+      [if] (:kf_jian) == fuyujianfa
+         [if] (sortResTianDi)
+            @perform sword.ji,unarmed.qi,unarmed.liu,force.zhen,sword.ji,unarmed.qi,unarmed.liu
+         [else]
+            @perform sword.ji,unarmed.qi,unarmed.liu
+   [if](:weapon blade) ==true
+      [if] (:kf_dao) == xuedao
+         [if] (sortResTianDi)
+            @perform unarmed.qi,unarmed.liu,blade.xue,force.zhen,unarmed.qi,unarmed.liu
+         [else]
+            @perform unarmed.qi,unarmed.liu,blade.xue
+
+//出招：暗器技能：蛇锥/落花/定影等。
+//定影
+[if] (sortResDingYing)
+  @perform throwing.ding
+//落花
+[if] (sortResLuoHua)
+  @perform throwing.luo
+//蛇锥
+[if] (sortResSheZhui)
+  @perform throwing.jiang

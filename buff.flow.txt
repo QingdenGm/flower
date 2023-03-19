@@ -1,0 +1,59 @@
+// ~silent
+//续黄玄灵丹、内功、武器、招架、轻功的buff,下面写的是我自己常用的，没有的按照格式自己添加。
+//事件选择BUFF状态改变，移除，自己。BuffId：food|btd|parry|dodge|force|weapon（复制前面的BuffId到触发里面的BuffId处，同时将全部内容复制到触发器里。）
+
+[if] (:combating)
+
+//自创的技能，同时也兼容出自创外的技能。（我这里自创的技能是内功，所以内功BUFF用这个写法，如果你自创是其他位置的BUFF请按照这个方法修改。）
+@js ($skill) = $('.pfm-item').text()
+@js ($sortResHunDun) = /混沌诀/.test('(skill)')
+@js ($sortResJianXin) = /剑心通明/.test('(skill)')
+@js ($sortResJiuYin) = /逆转九阴/.test('(skill)')
+
+//黄玄灵丹：（g：绿色，b：蓝色，y：黄色，p：紫色，o：橙色，r：红色。）
+  [if] (sid) == food
+     use {b玄灵丹y}
+
+//内功BUFF：（自创技能写法。）
+  [if] (sid) == force
+     [if] (sortResHunDun)
+       @perform force.busi
+     [if] (sortResJianXin)
+       @perform force.xin
+     [if] (sortResJiuYin)
+       @perform force.cui
+
+//武器BUFF：
+  [if] (sid) == weapon
+     [if](:weapon sword) ==true 
+        [if] (:kf_jian) == dugujiujian2
+           @perform sword.wu
+        [if] (:kf_jian) == dugujiujian4
+           @perform sword.yi
+        [if] (:kf_jian) == fuyujianfa
+           @perform sword.yu
+	 [if](:weapon blade) ==true 
+        [if] (:kf_dao) == xuedao
+           perform blade.shi
+	  
+//轻功BUFF：
+  [if] (sid) == dodge
+     [if] (:kf_qing) == lingxibu
+       @perform dodge.fo
+     [if] (:kf_qing) == tianmoce
+       @perform dodge.gui
+     [if] (:kf_qing) == qianlizhuifeng
+       @perform dodge.zhui
+     [if] (:kf_qing) == taxuexunmei
+       @perform dodge.power
+	  
+//招架BUFF：
+  [if] (sid) == parry
+     [if] (:kf_zhao) == hengshanwushenjian
+       @perform parry.wu
+     [if] (:kf_zhao) == yihuajiemu
+       @perform parry.yi
+  [if] (sid) == btd
+     [if] (:kf_zhao) == tianmoce
+       @perform parry.bu
+
